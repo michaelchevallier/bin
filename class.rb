@@ -50,7 +50,7 @@ def make_cpp name, _attr = nil
 			s << "#{v.first}		"
 			s << "	" if v.first.length < 16
 			s << "	" if v.first.length < 11
-			s << "#{name}::get#{v.last.slice(0,1).capitalize + v.last.slice(1..-1)}( void )\n"
+			s << "#{name}::get#{v.last.slice(0,1).capitalize + v.last.slice(1..-1)}( void ) const\n"
 			s << "{\n"
 			s << "	return(this->_#{v.last});\n"
 			s << "}\n"
@@ -88,7 +88,7 @@ def make_hpp name, _attr = nil
 			s << "		#{v.first}	"
 			s << "	" if v.first.length < 16
 			s << "	" if v.first.length < 11
-			s << "get#{v.last.slice(0,1).capitalize + v.last.slice(1..-1)}( void );\n"
+			s << "get#{v.last.slice(0,1).capitalize + v.last.slice(1..-1)}( void ) const;\n"
 		end
 	end
 	s << "	\n"
@@ -96,10 +96,10 @@ def make_hpp name, _attr = nil
 		s << "	private:\n\n"
 		_attr.each do |a|
 			v = a.split('_')
-			s << "		#{v.first}"
+			s << "		#{v.first}	"
 			s << "	" if v.first.length < 16
 			s << "	" if v.first.length < 11
-			s << "		_#{v.last};\n"
+			s << "_#{v.last};\n"
 		end
 	end
 	s << "};\n\n"
