@@ -1,5 +1,5 @@
 # class='ruby /Users/USER/bin/class.rb' <- alias
-# class Toto#std::string_name,unsigned int_nbToto Toto2#bool_name,unsigned int_nbToto 
+# class "Toto#std::string_name,unsigned int_nbToto" "Toto2#bool_name,unsigned int_nbToto"
 #
 
 def make_cpp name, _attr = nil
@@ -40,7 +40,9 @@ def make_cpp name, _attr = nil
 	s << "// CONSTRUCTOR POLYMORPHISM ######################################\n\n"
 	s << "// ###############################################################\n\n"
 	s << "// OVERLOAD OPERATOR #############################################\n\n"
-	s << "// ###############################################################\n\n"
+	s << "std::ostream &				operator<<(std::ostream & o, #{name} const & i)\n{\n"
+	s << "\t(void)i;\n\treturn (o);"
+	s << "\n}\n\n// ###############################################################\n\n"
 	s << "// PUBLIC METHOD #################################################\n\n"
 	s << "// ###############################################################\n\n"
 	s << "// GETTER METHOD #################################################\n\n"
@@ -50,7 +52,8 @@ def make_cpp name, _attr = nil
 			s << "#{v.first}		"
 			s << "	" if v.first.length < 16
 			s << "	" if v.first.length < 11
-			s << "#{name}::get#{v.last.slice(0,1).capitalize + v.last.slice(1..-1)}( void ) const\n"
+			s << "	" if v.first.length < 6
+			s << "#{name}::get#{v.last.slice(0,1).capitalize + v.last.slice(1..-1)}( void ) const noexcept\n"
 			s << "{\n"
 			s << "	return(this->_#{v.last});\n"
 			s << "}\n"
@@ -72,7 +75,11 @@ end
 
 def make_hpp name, _attr = nil
 
-	s = "#ifndef #{name.upcase}_HPP\n"
+	s =  "// ------------------------------------------------------------	//\n"
+	s << "//																//\n"
+	s << "//																//\n"
+	s << "// ------------------------------------------------------------	//\n\n"
+	s << "#ifndef #{name.upcase}_HPP\n"
 	s << "# define #{name.upcase}_HPP\n\n"
 	s << "class #{name}\n"
 	s << "{\n"
@@ -82,13 +89,15 @@ def make_hpp name, _attr = nil
 	s << "		#{name}( #{name} const & src );\n"
 	s << "		virtual ~#{name}( void );\n\n"
 	s << "		#{name} &			operator=( #{name} const & rhs );\n\n"
+	s << "		friend std::ostream &				operator<<(std::ostream & o, #{name} const & i);\n"
 	if _attr
 		_attr.each do |a|
 			v = a.split('_')
 			s << "		#{v.first}	"
 			s << "	" if v.first.length < 16
 			s << "	" if v.first.length < 11
-			s << "get#{v.last.slice(0,1).capitalize + v.last.slice(1..-1)}( void ) const;\n"
+			s << "	" if v.first.length < 6
+			s << "get#{v.last.slice(0,1).capitalize + v.last.slice(1..-1)}( void ) const noexcept;\n"
 		end
 	end
 	s << "	\n"
@@ -99,6 +108,7 @@ def make_hpp name, _attr = nil
 			s << "		#{v.first}	"
 			s << "	" if v.first.length < 16
 			s << "	" if v.first.length < 11
+			s << "	" if v.first.length < 6
 			s << "_#{v.last};\n"
 		end
 	end
