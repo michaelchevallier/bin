@@ -88,8 +88,8 @@ def make_hpp name, _attr = nil
 	s << "		#{name}( void );\n"
 	s << "		#{name}( #{name} const & src );\n"
 	s << "		virtual ~#{name}( void );\n\n"
-	s << "		#{name} &			operator=( #{name} const & rhs );\n\n"
-	s << "		friend std::ostream &				operator<<(std::ostream & o, #{name} const & i);\n"
+	s << "		#{name} &							operator=( #{name} const & rhs );\n"
+	s << "		friend std::ostream &				operator<<(std::ostream & o, #{name} const & i);\n\n"
 	if _attr
 		_attr.each do |a|
 			v = a.split('_')
